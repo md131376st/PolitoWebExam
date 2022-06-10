@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const courseDao = require('./dao_Course');
-const {Course, CourseList} = require("./Course");
+const courseDao = require('../dao_Course');
+const {Course, CourseList} = require("../Course");
 
 router.get('/Courses', async (req, res) => {
 	try {

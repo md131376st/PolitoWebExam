@@ -1,4 +1,4 @@
-import {Course, CourseList} from './models/Course';
+import {Course} from './models/Course';
 
 const SERVER_URL = 'http://localhost:3001/api/v1';
 
@@ -25,10 +25,42 @@ const getAllCourses = async () => {
 
 		} else
 			throw courseJson;
-	}
-	catch (e){
+	} catch (e) {
 		throw "server Not connected"
 	}
 };
-const API = {getAllCourses};
+
+const logOut = async () => {
+	const response = await fetch(SERVER_URL + '/api/sessions/current', {
+		method: 'DELETE',
+		credentials: 'include'
+	});
+	if (response.ok)
+		return null;
+}
+const logIn = async (credentials) => {
+	try{
+		const response = await fetch(SERVER_URL + '/sessions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+			body: JSON.stringify(credentials),
+		});
+		if (response.ok) {
+			return await response.json();
+		} else {
+			throw 404;
+		}
+	}
+	catch (e) {
+		if(e === 404)
+			throw "Incorrect username or password."
+		throw "server Not connected"
+	}
+
+
+};
+const API = {getAllCourses, logOut, logIn};
 export default API;

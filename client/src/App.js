@@ -2,74 +2,79 @@ import './App.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UserContext from './UserContext';
-import {useEffect, useState} from "react";
+import { useState} from "react";
 
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route, Navigate, Link, Outlet, useNavigate} from 'react-router-dom';
 
 import API from './api';
-import {Alert, Col, Container, Navbar, Row, Spinner} from "react-bootstrap";
-import CourseTable from "./Components/courseTable";
+import { Container, Nav, Navbar} from "react-bootstrap";
+import {LoginPage, LogoutButton} from "./Components/LoginPage";
+import DefaultRouting from "./Components/DefultRouting";
+
 
 function App() {
 	const [user, setUser] = useState(undefined);
 	const [loggedIn, setLoggedIn] = useState(false);
-	const [course, setCourse] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState('');
+	const [loginErr, setLoginErr] = useState(undefined)
 
-	const getCourses = async () => {
+	const navigate = useNavigate();
+	const handleLogin = async (credentials) => {
 		try {
-			const courseList = await API.getAllCourses();
-			setCourse(courseList);
-			setLoading(false);
-		}
-		catch (e) {
-			setErrorMessage(e)
-			setLoading(false);
-		}
+			const user = await API.logIn(credentials);
+			setLoginErr(undefined);
+			setLoggedIn(true);
+			setUser(user);
+			navigate('/');
 
+		} catch (err) {
+
+			setLoginErr(err);
+			navigate('/login');
+		}
 	};
-	useEffect(() => {
-		getCourses();
-		setLoading(true)
-	}, []);
+
+	const handleLogout = async () => {
+		await API.logOut();
+		setLoggedIn(false);
+		setUser(undefined);
+		navigate('/');
+	};
+
+
+
+
 	return (
 		<div className="App">
-			<Container  fluid ="true">
-			<Navbar bg="light">
-				<Container>
-					<Navbar.Brand> StudyPlan</Navbar.Brand>
-				</Container>
-			</Navbar>
-			<Container className="vheight-100"  >
-				<Row className="col-ms-2 minSpace"/>
-				<Row  >
-					<Col  >
-						{loading &&
-							< Spinner animation="border" variant="primary" role="status">
-								<span className="visually-hidden">Loading...</span>
-							</Spinner>
-						}
-						{
-							!loading && !errorMessage &&
-							<CourseTable course={course}/>
-						}
-						{
-							errorMessage &&
-							<Alert  variant={"secondary"}>
-								{errorMessage }
-							</Alert>
-						}
-					</Col>
-				</Row>
-				<Row className="col-ms-2 minSpace"/>
-			</Container>
+			<Container fluid="true">
+				<Navbar bg="light">
+					<Container>
+						<Navbar.Brand> StudyPlan</Navbar.Brand>
+						<Nav>
+							<Link to={loggedIn ?
+								"logout" : "login"}> {loggedIn ? "logout" : "login"} </Link>
 
-			<UserContext.Provider value={user}>
-				{/*<Routes>*/}
+						</Nav>
+					</Container>
+				</Navbar>
+				<Outlet/>
 
-				{/*</Routes>*/}
-			</UserContext.Provider>
+				<UserContext.Provider value={user}>
+					<Routes>
+						<Route path="/">
+							<Route path='login' element={
+
+								loggedIn ? <Navigate replace to='/'/> :
+									<LoginPage login={handleLogin} err={loginErr}/>
+
+							}/>
+							<Route path='logout' element={
+								<LogoutButton logout={handleLogout}/>
+							}/>
+
+							<Route index element={<DefaultRouting />}/>
+						</Route>
+					</Routes>
+				</UserContext.Provider>
 			</Container>
 		</div>
 	);

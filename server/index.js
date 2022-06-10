@@ -56,9 +56,30 @@ app.use(session({
 
 app.use(passport.authenticate('session'));
 
-const StudyPlanRouter = require('./StudyPlanRouting');
+
+const StudyPlanRouter = require('./Routing/StudyPlanRouting');
 const PREFIX = '/api/v1';
 app.use(express.json());
 app.use(PREFIX, StudyPlanRouter);
+
+app.post(PREFIX+'/sessions', passport.authenticate('local'), (req, res) => {
+	res.status(201).json(req.user);
+});
+
+// GET /api/sessions/current
+app.get(PREFIX+'/sessions/current', (req, res) => {
+	if(req.isAuthenticated()) {
+		res.json(req.user);}
+	else
+		res.status(401).json({error: 'Not authenticated'});
+});
+
+// DELETE /api/session/current
+app.delete(PREFIX+'/sessions/current', (req, res) => {
+	req.logout(() => {
+		res.end();
+	});
+});
+
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));
