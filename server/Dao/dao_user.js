@@ -15,12 +15,10 @@ exports.getUser = (email, password) => {
 		db.all(sql, [email], (err, row) => {
 			if (err) {
 				reject(err);
-			} else if (row === undefined || row.length!==1 ) {
-				console.log(row)
+			} else if (row === undefined || row.length !== 1) {
 				resolve(false);
 			} else {
-				console.log(row)
-				const user = {id: row[0].id, username: row[0].email, name: row[0].name};
+				const user = {id: row[0].id, username: row[0].email, name: row[0].name, studyplan: row[0].studyPlan};
 
 				crypto.scrypt(password.toString(), row[0].salt, 32, function (err, hashedPassword) {
 					if (err) reject(err);
@@ -34,30 +32,6 @@ exports.getUser = (email, password) => {
 	});
 };
 
-// exports.PostUser = (email, password, name) => {
-// 	return new Promise((resolve, reject) => {
-// 		const sql = 'INSERT INTO user (email, password, salt, name) \
-//                         VALUES (?,?,?,?)'
-//
-// 		db.run(sql, [email], (err, row) => {
-// 			if (err) {
-// 				reject(err);
-// 			} else if (row === undefined) {
-// 				resolve(false);
-// 			} else {
-// 				const user = {id: row.id, username: row.email, name: row.name};
-//
-// 				crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
-// 					if (err) reject(err);
-// 					if (!crypto.timingSafeEqual(Buffer.from(row.password, 'hex'), hashedPassword))
-// 						resolve(false);
-// 					else
-// 						resolve(user);
-// 				});
-// 			}
-// 		});
-// 	});
-// };
 
 exports.getUserById = (id) => {
 	return new Promise((resolve, reject) => {
@@ -70,6 +44,21 @@ exports.getUserById = (id) => {
 			} else {
 				const user = {id: row.id, username: row.email, name: row.name};
 				resolve(user);
+			}
+		});
+	});
+};
+
+exports.setUserProgramType = (studyPlanType, userId) => {
+	return new Promise((resolve, reject) => {
+		const sql = 'UPDATE user SET studyPlan=? WHERE id = ?';
+		db.run(sql, [studyPlanType, userId], (err, row) => {
+			if (err) {
+				reject(err);
+			} else {
+				if (this.changes === 0)
+					reject(new Error("Insertion in DB failed"));
+				resolve(this);
 			}
 		});
 	});

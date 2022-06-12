@@ -28,6 +28,10 @@ const DefaultRouting = (props) => {
 		});
 		setLoading(true);
 	}, []);
+	useEffect(()=>{
+
+	})
+
 	return (
 		<Container className="vheight-100">
 			<Row className="col-ms-2 minSpace">

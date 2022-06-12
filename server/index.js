@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 const morgan = require('morgan');
-const userDao = require('./dao_user'); // module for accessing the DB
+const userDao = require('./Dao/dao_user'); // module for accessing the DB
 const cors = require('cors');
 
 // Passport-related imports

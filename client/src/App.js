@@ -65,7 +65,6 @@ function App() {
 
 								loggedIn ? <Navigate replace to='/'/> :
 									<LoginPage login={handleLogin} err={loginErr}/>
-
 							}/>
 							<Route path='logout' element={
 								<LogoutButton logout={handleLogout}/>
