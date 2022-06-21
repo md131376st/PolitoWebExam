@@ -7,7 +7,7 @@ const db = new DBOperations();
 
 async function ReadCourses() {
 
-	const sql = 'SELECT * FROM Course ORDER BY name';
+	const sql = 'SELECT Course.code, Course.name, Course.numCredit,  Inrolednum.numInRole, Course.maxCapacity, Course.mandatoryCourse  FROM Course  LEFT JOIN  (select count(*) as numInRole , courseCode FROM studyplan GROUP by courseCode) as Inrolednum on Course.code=  inrolednum.courseCode ORDER BY name';
 	const arg = [];
 	return await db.fromDB(sql, arg);
 }
@@ -30,10 +30,10 @@ async function CalculateSumCredit(studyPlan) {
 
 	let sql = 'SELECT sum(numCredit) as sum FROM Course  WHERE code in ( ';
 	for (const num in studyPlan) {
-		if(num!== (studyPlan.length-1).toString())
+		if (num !== (studyPlan.length - 1).toString())
 			sql += "?,"
 		else
-			sql +="?)"
+			sql += "?)"
 	}
 	return await db.fromDB(sql, studyPlan);
 }

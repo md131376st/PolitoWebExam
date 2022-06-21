@@ -5,6 +5,13 @@ const StudyPlanDao = require('../Dao/dao_StudyPlan');
 const userDao = require('../Dao/dao_user');
 const {Course, CourseList} = require("../Course");
 const {body, param, validationResult} = require('express-validator');
+const isLoggedIn = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	return res.status(401).json({error: 'Not authorized'});
+}
+
 
 router.get('/Courses', async (req, res) => {
 	try {
@@ -25,7 +32,9 @@ router.get('/Courses', async (req, res) => {
 
 });
 router.get('/StudyPlan/:id',
+	isLoggedIn,
 	param('id').isInt().withMessage('InvalidUserID'),
+
 	async (req, res) => {
 		try {
 			const errors = validationResult(req);
@@ -33,8 +42,7 @@ router.get('/StudyPlan/:id',
 				res.status(400).json({error: "in valid User ID"});
 			}
 			const rows = await StudyPlanDao.ReadStudyPlan(req.params.id);
-			res.json(rows);
-
+			res.json(rows.map((course) => course.courseCode));
 		} catch (err) {
 			console.log(err)
 			res.status(500).json({error: "Internal problem"});
@@ -43,6 +51,7 @@ router.get('/StudyPlan/:id',
 	});
 
 router.post('/StudyPlan/:id',
+	isLoggedIn,
 	param('id').isInt().withMessage('InvalidUserID'),
 	async (req, res) => {
 		try {
@@ -86,7 +95,7 @@ router.post('/StudyPlan/:id',
 			if (CheakIFPlanExsist.length !== 0)
 				await StudyPlanDao.deleteItemByIdFromDB(req.params.id);
 			const rows = await StudyPlanDao.createStudyPlanIntoDB(req.body.studyPlanList, req.params.id);
-			await userDao.setUserProgramType(req.body.PlanType);
+			await userDao.setUserProgramType(req.body.PlanType, req.params.id);
 
 			res.sendStatus(201);
 		} catch (err) {
@@ -95,7 +104,9 @@ router.post('/StudyPlan/:id',
 		}
 
 	});
-router.delete('/StudyPlan/:id', param('id').isInt().withMessage('InvalidUserID'),
+router.delete('/StudyPlan/:id',
+	isLoggedIn,
+	param('id').isInt().withMessage('InvalidUserID'),
 	async (req, res) => {
 		try {
 			const errors = validationResult(req);

@@ -41,12 +41,6 @@ passport.deserializeUser(function (user, cb) { // this user is id + email + name
 	// if needed, we can do extra check here (e.g., double check that the user is still in the database, etc.)
 });
 
-const isLoggedIn = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	return res.status(401).json({error: 'Not authorized'});
-}
 
 app.use(session({
 	secret: "monadavari2021",

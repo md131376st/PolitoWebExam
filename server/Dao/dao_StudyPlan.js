@@ -7,7 +7,7 @@ const db = new DBOperations();
 
 async function ReadStudyPlan(id) {
 
-	const sql = 'SELECT * FROM studyplan WHERE userID =?';
+	const sql = 'SELECT courseCode FROM studyplan WHERE userID =?';
 	const arg = [id];
 	return await db.fromDB(sql, arg);
 }
@@ -34,5 +34,6 @@ async function deleteItemByIdFromDB(userId) {
 	return await db.deleteFromDB(sql, args);
 
 }
+
 
 module.exports = {ReadStudyPlan, createStudyPlanIntoDB, deleteItemByIdFromDB};

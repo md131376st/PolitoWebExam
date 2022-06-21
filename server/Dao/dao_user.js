@@ -52,7 +52,7 @@ exports.getUserById = (id) => {
 exports.setUserProgramType = (studyPlanType, userId) => {
 	return new Promise((resolve, reject) => {
 		const sql = 'UPDATE user SET studyPlan=? WHERE id = ?';
-		db.run(sql, [studyPlanType, userId], (err, row) => {
+		db.run(sql, [studyPlanType ? 1 : 0, userId], (err, row) => {
 			if (err) {
 				reject(err);
 			} else {

@@ -29,7 +29,17 @@ const getAllCourses = async () => {
 		throw "server Not connected"
 	}
 };
-
+const getUserInfo = async () => {
+	const response = await fetch(SERVER_URL + '/api/sessions/current', {
+		credentials: 'include',
+	});
+	const user = await response.json();
+	if (response.ok) {
+		return user;
+	} else {
+		throw user;  // an object with the error coming from the server
+	}
+};
 const logOut = async () => {
 	const response = await fetch(SERVER_URL + '/api/sessions/current', {
 		method: 'DELETE',
@@ -39,7 +49,7 @@ const logOut = async () => {
 		return null;
 }
 const logIn = async (credentials) => {
-	try{
+	try {
 		const response = await fetch(SERVER_URL + '/sessions', {
 			method: 'POST',
 			headers: {
@@ -53,14 +63,77 @@ const logIn = async (credentials) => {
 		} else {
 			throw 404;
 		}
-	}
-	catch (e) {
-		if(e === 404)
+	} catch (e) {
+		if (e === 404)
 			throw "Incorrect username or password."
 		throw "server Not connected"
 	}
 
 
 };
-const API = {getAllCourses, logOut, logIn};
+const getStudyPlan = async (userId) => {
+	try {
+		const response = await fetch(SERVER_URL + '/StudyPlan/' + userId, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+		});
+		if (response.ok) {
+			return await response.json();
+		} else {
+			throw 400;
+		}
+	} catch (e) {
+		if (e === 400)
+			throw "userNotFound"
+		throw "server Not connected"
+	}
+}
+const CreateStudyPlan = async (userId, studyPlan) => {
+	try {
+		const response = await fetch(SERVER_URL + '/StudyPlan/' + userId, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+			body: studyPlan
+		});
+		if (response.status === 201) {
+			return "success"
+		} else {
+			const error = await response.json().error;
+			throw {code: 400, error: error}
+		}
+	} catch (e) {
+		if (e.code === 400)
+			throw e.error
+		throw "server Not connected"
+	}
+}
+
+const DeleteStudyPlan = async (userId) => {
+	try {
+		const response = await fetch(SERVER_URL + '/StudyPlan/' + userId, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+		});
+		if (response.ok) {
+			return await response.json();
+		} else {
+			throw 400;
+		}
+	} catch (e) {
+		if (e === 400)
+			throw "Please login again"
+		throw "server Not connected"
+	}
+}
+
+const API = {getAllCourses,getUserInfo, logOut, logIn, getStudyPlan, CreateStudyPlan,DeleteStudyPlan};
 export default API;

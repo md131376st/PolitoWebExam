@@ -1,11 +1,12 @@
 import {Table} from "react-bootstrap";
 import CourseRow from "./CourseRow";
+import "./Coursetable.css";
 
 
 function CourseTable(props) {
 	return (
 		<>
-			<Table striped={false}>
+			<Table className="CourseTable" striped={false}>
 				<thead>
 				<tr>
 					<th>Code</th>
@@ -13,14 +14,17 @@ function CourseTable(props) {
 					<th>Number of credits</th>
 					<th> Students In Role</th>
 					<th> Max Capacity</th>
+					<th> Operations</th>
+
 
 				</tr>
 				</thead>
-				<tbody>
+				<tbody >
 				{
 
 					props.course.map((e) => (
-						<CourseRow key={e.code} course={e}
+						<CourseRow addCourse={props.addCourse} DisplayWarning={props.DisplayWarning} key={e.code} course={e}
+						           studyPlan={props.studyPlan}
 						/>))
 				}
 				</tbody>
