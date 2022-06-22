@@ -1,4 +1,4 @@
-import {Button, Table} from "react-bootstrap";
+import {Accordion, Button, ListGroup, Table} from "react-bootstrap";
 import {useState, useContext, useEffect} from "react";
 import "./courseRow.css"
 import {useLocation} from "react-router-dom";
@@ -19,7 +19,7 @@ function CourseRow(props) {
 		return props.studyPlan.includes(props.course.mandatoryCourse)
 	}
 	const NotIncompatibeCourse = () => {
-		if ( props.course.IncompatibeCourse.length === 0)
+		if (props.course.IncompatibeCourse.length === 0)
 			return false;
 
 		for (const course of props.course.IncompatibeCourse) {
@@ -81,6 +81,7 @@ function CourseRow(props) {
 
 	return (
 		<>
+
 			<tr>
 				<ExamData course={props.course}/>
 				<td>
@@ -93,38 +94,44 @@ function CourseRow(props) {
 					user !== undefined &&
 					!props.studyPlan.includes(props.course.code) &&
 					<td>
-						<Button key={props.studyPlan.length} variant={setVariantButton()} onClick={() => AddCourse()}> add </Button>
+						<Button key={props.studyPlan.length} variant={setVariantButton()}
+						        onClick={() => AddCourse()}> add </Button>
 					</td>
 
 				}
-
+			</tr>
+			<tr>
 				{extra &&
-					<Table className="extraInfo">
-						<thead>
-						<tr>
-							<th>Mandatory Course</th>
-							<th> Incompatible Courses</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td>
-								{props.course.mandatoryCourse}
-							</td>
-							<td>
-								{props.course.IncompatibeCourse.map((e) => (
-										<div>
-											{e}
-											<br/>
-										</div>
-									)
-								)}
-							</td>
-						</tr>
-						</tbody>
-					</Table>
+					<td>
+						<ListGroup horizontal variant="info" key={"extra_info" + props.course.code}>
+							<ListGroup className="extraInfo" key={"mandatory_extra_info" + props.course.code}>
+								<ListGroup.Item>
+									<h5>Mandatory Course</h5><
+								/ListGroup.Item>
+								{props.course.mandatoryCourse !== ' ' &&
+									<ListGroup.Item>{props.course.mandatoryCourse} </ListGroup.Item>
+								}
+							</ListGroup>
+							<ListGroup className="extraInfo" key={"Incompateble_extra_info" + props.course.code}>
+
+								<ListGroup.Item>
+									<h5>Incompatible Courses </h5>
+								</ListGroup.Item>
+								{
+									props.course.IncompatibeCourse.map(e => (
+										<ListGroup.Item
+											key={"Incompateble_Item_extra_info" + props.course.code + e}>{e} </ListGroup.Item>
+									))
+								}
+
+							</ListGroup>
+
+						</ListGroup>
+					</td>
+
 				}
 			</tr>
+
 		</>
 
 	);

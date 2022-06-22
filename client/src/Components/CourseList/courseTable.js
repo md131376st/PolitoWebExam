@@ -1,11 +1,11 @@
-import {Table} from "react-bootstrap";
+import {Accordion, Table} from "react-bootstrap";
 import CourseRow from "./CourseRow";
 import "./Coursetable.css";
 
 
 function CourseTable(props) {
 	return (
-		<>
+
 			<Table className="CourseTable" striped={false}>
 				<thead>
 				<tr>
@@ -29,7 +29,7 @@ function CourseTable(props) {
 				}
 				</tbody>
 			</Table>
-		</>);
+		);
 
 }
 
