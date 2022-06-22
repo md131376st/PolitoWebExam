@@ -333,13 +333,13 @@
 
 ## Screenshot
 
-![homeUnauthenticated](https://github.com/polito-WA1-AJ-2022-exam/exam-1---studyplan-md131376st/tree/main/Images/1.png)
-![expand course](./images/2.png)
-![loginpage](./images/3.png)
-![home login user](./images/4.png)
-![edit mode](./images/5.png)
-![Screenshot](./images/6.png)
-![add change color](./images/7.png)
+![homeUnauthenticated](./Images/1.png)
+![expand course](./Images/2.png)
+![loginpage](./Images/3.png)
+![home login user](./Images/4.png)
+![edit mode](./Images/5.png)
+![Screenshot](./Images/6.png)
+![add change color](./Images/7.png)
 
 ## Users Credentials
 
