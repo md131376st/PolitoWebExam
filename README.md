@@ -1,5 +1,6 @@
 # Exam #12345: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+
+## Student: s123456 LASTNAME FIRSTNAME
 
 ## React Client Application Routes
 
@@ -10,11 +11,12 @@
 ## API Server
 
 - GET `/api/v1/Courses`
-  - Description: Get the full list of courses
-  - Request body: _None_
-  - Request query parameter: _None_
-  - Response: `200 OK` (success)
-  - Response body: Array of objects, each describing one Course :
+    - Description: Get the full list of courses
+    - Request body: _None_
+    - Request query parameter: _None_
+    - Response: `200 OK` (success)
+    - Response body: Array of objects, each describing one Course :
+
 ``` JSON
 {
     "courseList": [
@@ -231,39 +233,143 @@
 }
 ```
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+- GET `/api/v1/StudyPlan/`+userId
+    - Description: Get the full list study plan
+    - Request body: _None_
+    - Request query parameter: userID
+    - Response: `200 OK` (success)
+    - Response body: Array of Course code list :
+  ``` json
+  [
+    "01UDFOV",
+    "02GOLOV",
+    "03UEWOV",
+    "01URROV"]
+  ```
+
+  - post `/api/v1/StudyPlan/`+userId
+    - Description: Update/CreateStudyPlan
+    - Request body:
+    - ``` json
+      {"PlanType": 1,
+  "studyPlanList": [
+  "01UDFOV",
+  "02GOLOV",
+  "03UEWOV",
+  "01URROV"
+  ]
+  }
+      ```
+    - Request query parameter: userID
+    - Response: `201 CREATE` (success)
+
+
+- DELETE `/api/v1/StudyPlan/`+userId
+  - Description: Delete the hole study plan
+  - Request body: _None_
+- Request query parameter: userID
+- Response: `200 CREATE` (success)
+
+- POST `/api/vi/sessions`
+  - Description: login data
+  - Request body: 
+``` JSON
+
+{
+"username":"test@gmail.com",
+"password":"password"
+}
+
+```
+  - Request query parameter: _None_
+  - Response: `200 OK` (success)
+  - Response body: Array of user object
+``` JSON
+ {
+    "id": 1,
+    "username": "test@gmail.com",
+    "name": "test",
+    "studyplan": 1
+}
+```
+
+- Delete `/api/v1/sessions/current`
+    - Description: logout
+    - Response: `200 OK` (success)
+
+- GET `/api/v1/sessions/current`
+- Description: Get credintioals of the corrent user
+- Response: `200 OK` (success)
+- Response body: Array of user object
+
+ ``` JSON
+{
+    "id": 1,
+    "username": "test@gmail.com",
+    "name": "test",
+    "studyplan": 1
+}
+```
 
 ## Database Tables
 
-- Table `Course` - contains course code, name, credit number, number student in rolled, course max capacity , mandatory Course
-- Table `incompatibeCourses` - contains  course code and the one of its incompatible course  
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
+- Table `Course` - contains course code, name, credit number, course max capacity , mandatory
+  Course
+- Table `incompatibeCourses` - contains course code and the one of its incompatible course
+- Table `users` - contains user email, password, salt, name, study plan type 
+- Table `studyplan` - contains user id , course code
 - ...
 
 ## Main React Components
+- `LoginPage` (in `Components\Auth\LoginPage.js`): show login page
+- `LogoutButton` (in `Components\Auth\LoginPage.js`): show logout page
+- `CourseTable` (in `Components\CourseList\CourseTable.js`): shows the course table
+- `CourseRow` (in `Components\CourseList\CourseRow.js`): shows the course details and add button logic
+- `DeletePlan` (in `Components\StudyPlan\DeletePlan.js`): Delete the study plan
+- `DeletePlan` (in `Components\StudyPlan\DeletePlan.js`): Delete the study plan
+- `StudyPlanRow` (in `Components\StudyPlan\StudyPlanRow.js`): show the details of course in study plan
+- `StudyPlanTable` (in `Components\StudyPlan\StudyPlanTable.js`): the current study plan table
 
-- `CourseTable` (in `CourseTable.js`): shows the course table 
-- `CourseRow` (in `CourseRow.js`): shows the information of a singles course 
-
-- ...
-
-(only _main_ components, minor ones may be skipped)
 
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+![homeUnauthenticated](./images/1.png)
+![expand course](./images/2.png)
+![loginpage](./images/3.png)
+![home login user](./images/4.png)
+![edit mode](./images/5.png)
+![Screenshot](./images/6.png)
+![add change color](./images/7.png)
 
 ## Users Credentials
 
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+```json
+{
+    "username":"test@gmail.com",
+    "password":"password"
+}
+```
+```json
+{
+    "username":"test1@gmail.com",
+    "password":"password"
+}
+```
+```json
+{
+    "username":"test3@gmail.com",
+    "password":"password"
+}
+```
+```json
+{
+    "username":"test4@gmail.com",
+    "password":"password"
+}
+```
+```json
+{
+    "username":"test5@gmail.com",
+    "password":"password"
+}
+```
