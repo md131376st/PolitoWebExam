@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Form, Button, Row, Col, Container, Alert} from 'react-bootstrap';
 import "./loginPage.css"
-import {Outlet, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 export function LoginPage(props) {
 

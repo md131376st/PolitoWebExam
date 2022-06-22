@@ -23,7 +23,7 @@ function CourseTable(props) {
 				{
 
 					props.course.map((e) => (
-						<CourseRow addCourse={props.addCourse} DisplayWarning={props.DisplayWarning} key={e.code} course={e}
+						<CourseRow key={"CR_"+e.code} addCourse={props.addCourse} DisplayWarning={props.DisplayWarning} key={e.code} course={e}
 						           studyPlan={props.studyPlan}
 						/>))
 				}

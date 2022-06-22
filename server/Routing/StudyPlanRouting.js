@@ -59,13 +59,13 @@ router.post('/StudyPlan/:id',
 			//check student credit
 			let getCreditCheck = await courseDao.CalculateSumCredit(studyplan);
 			getCreditCheck = getCreditCheck[0].sum;
-			if ((getCreditCheck < 60 || getCreditCheck > 80) && req.body.PlanType) {
+			if ((getCreditCheck < 60 || getCreditCheck > 80) && req.body.PlanType === 2) {
 
 				res.status(403).json({
 					error: "the total number of credits for full-time students is between 60 and 80  "
 				})
 				return;
-			} else if ((getCreditCheck < 20 || getCreditCheck > 40) && !req.body.PlanType) {
+			} else if ((getCreditCheck < 20 || getCreditCheck > 40) && req.body.PlanType === 1) {
 				res.status(403).json({
 					error: "the total number of credits for part-time students is between 20 and 40  "
 				})
@@ -86,6 +86,12 @@ router.post('/StudyPlan/:id',
 						error.push({error: course_ + " is incompatible with " + course})
 				}
 			}
+			//check availability of the course
+			const studentInRole = await courseDao.GetInroledNumber(studyplan);
+			for (const course of studentInRole) {
+				if (course.maxCapacity !== null && ourse.numInRole!==null && course.numInRole >= course.maxCapacity)
+					error.push({error: course.code + " is full"})
+			}
 			if (error.length !== 0) {
 				res.status(400).json(error);
 				return;
@@ -95,7 +101,10 @@ router.post('/StudyPlan/:id',
 			if (CheakIFPlanExsist.length !== 0)
 				await StudyPlanDao.deleteItemByIdFromDB(req.params.id);
 			const rows = await StudyPlanDao.createStudyPlanIntoDB(req.body.studyPlanList, req.params.id);
-			await userDao.setUserProgramType(req.body.PlanType, req.params.id);
+
+
+			const planType = req.body.PlanType;
+			await userDao.setUserProgramType(planType === null ? 0 : planType, req.params.id);
 
 			res.sendStatus(201);
 		} catch (err) {
@@ -114,6 +123,7 @@ router.delete('/StudyPlan/:id',
 				res.status(400).json({error: "in valid User ID"});
 			}
 			const rows = await StudyPlanDao.deleteItemByIdFromDB(req.params.id);
+			await userDao.setUserProgramType(0, req.params.id);
 			res.json(rows);
 
 		} catch (err) {

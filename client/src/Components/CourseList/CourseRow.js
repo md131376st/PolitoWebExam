@@ -1,9 +1,9 @@
-import {Button, Container, Row, Table} from "react-bootstrap";
+import {Button, Table} from "react-bootstrap";
 import {useState, useContext, useEffect} from "react";
 import "./courseRow.css"
 import {useLocation} from "react-router-dom";
-import UserContext from "../UserContext";
-import CourseState from "../models/CourseState";
+import UserContext from "../../UserContext";
+import CourseState from "../../models/CourseState";
 
 function CourseRow(props) {
 	const [extra, setExtra] = useState(false);
@@ -93,7 +93,7 @@ function CourseRow(props) {
 					user !== undefined &&
 					!props.studyPlan.includes(props.course.code) &&
 					<td>
-						<Button variant={setVariantButton()} onClick={() => AddCourse()}> add </Button>
+						<Button key={props.studyPlan.length} variant={setVariantButton()} onClick={() => AddCourse()}> add </Button>
 					</td>
 
 				}

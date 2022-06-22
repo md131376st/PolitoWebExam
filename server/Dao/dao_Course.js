@@ -12,6 +12,19 @@ async function ReadCourses() {
 	return await db.fromDB(sql, arg);
 }
 
+async function GetInroledNumber(courses) {
+
+	let sql = 'SELECT Course.code, Inrolednum.numInRole, Course.maxCapacity FROM Course  LEFT JOIN  (select count(*) as numInRole , courseCode FROM studyplan GROUP by courseCode) as Inrolednum on Course.code=  inrolednum.courseCode WHERE Course.code IN (  ';
+	for (const num in courses) {
+		if (num !== (courses.length - 1).toString())
+			sql += "?,"
+		else
+			sql += "?)"
+	}
+	const arg = [];
+	return await db.fromDB(sql, courses);
+}
+
 
 async function GetIncompatibeCourse(code) {
 	const sql = 'SELECT SecondCourse FROM incompatibeCourses WHERE PrimeCourse =? ';
@@ -39,4 +52,4 @@ async function CalculateSumCredit(studyPlan) {
 }
 
 
-module.exports = {ReadCourses, GetIncompatibeCourse, GetMandatoryCourses, CalculateSumCredit};
+module.exports = {ReadCourses, GetIncompatibeCourse, GetMandatoryCourses, CalculateSumCredit,GetInroledNumber};

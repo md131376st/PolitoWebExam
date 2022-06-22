@@ -30,7 +30,7 @@ const getAllCourses = async () => {
 	}
 };
 const getUserInfo = async () => {
-	const response = await fetch(SERVER_URL + '/api/sessions/current', {
+	const response = await fetch(SERVER_URL + '/sessions/current', {
 		credentials: 'include',
 	});
 	const user = await response.json();
@@ -41,7 +41,7 @@ const getUserInfo = async () => {
 	}
 };
 const logOut = async () => {
-	const response = await fetch(SERVER_URL + '/api/sessions/current', {
+	const response = await fetch(SERVER_URL + '/sessions/current', {
 		method: 'DELETE',
 		credentials: 'include'
 	});
@@ -91,15 +91,17 @@ const getStudyPlan = async (userId) => {
 		throw "server Not connected"
 	}
 }
+
 const CreateStudyPlan = async (userId, studyPlan) => {
 	try {
+
 		const response = await fetch(SERVER_URL + '/StudyPlan/' + userId, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			credentials: 'include',
-			body: studyPlan
+			body: JSON.stringify(studyPlan),
 		});
 		if (response.status === 201) {
 			return "success"

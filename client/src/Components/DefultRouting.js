@@ -1,13 +1,17 @@
 import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
-import CourseTable from "./courseTable";
-import {Navigate, Outlet, useLocation, useNavigate} from "react-router-dom";
+import CourseTable from "./CourseList/courseTable";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useState, useEffect, useContext} from "react";
 import API from "../api";
-import StudyPlan from "./StudyPlan";
+import StudyPlan from "./StudyPlan/StudyPlan";
 import UserContext from "../UserContext";
 
 
 const DefaultRouting = (props) => {
+	const user = useContext(UserContext);
+	const location = useLocation();
+	const navigate = useNavigate();
+
 
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -15,10 +19,11 @@ const DefaultRouting = (props) => {
 	const [course, setCourse] = useState([]);
 	const [oldPlan, setOldPlan] = useState([]);
 
-
-	const user = useContext(UserContext);
-	const location = useLocation();
-	const navigate = useNavigate();
+	const [type, setType] = useState(0);
+	useEffect(() => {
+		if (user !== undefined)
+			setType(user.studyplan);
+	}, [user])
 	const getCourses = async () => {
 		try {
 			const courseList = await API.getAllCourses();
@@ -32,7 +37,7 @@ const DefaultRouting = (props) => {
 	};
 	useEffect(() => {
 		if (location.pathname === '/')
-			cancelPlanEdit();
+			CancelPlanEdit();
 	}, [location.pathname])
 
 	useEffect(() => {
@@ -41,15 +46,35 @@ const DefaultRouting = (props) => {
 		});
 		setLoading(true);
 	}, []);
+
 	const DisplayWarning = (w) => {
 		setWarning(w);
 	}
-	const editmodeSave = () => {
-		setOldPlan(props.studyPlan)
+	const EditModeSave = () => {
+		setOldPlan(props.studyPlan);
 	}
-	const cancelPlanEdit = () => {
+	const ChangePlanType = (type) => {
+		setType(type);
+	}
+	const CancelPlanEdit = () => {
 		props.resetPlan(oldPlan);
 		navigate('/');
+	}
+	const savePlan = async (studyPlanType) => {
+		try {
+			await API.CreateStudyPlan(user.id,
+				{
+					PlanType: studyPlanType,
+					studyPlanList: props.studyPlan
+				}
+			);
+			props.ChangeUserPType(studyPlanType);
+			EditModeSave();
+			await getCourses();
+			navigate('/');
+		} catch (err) {
+			setWarning(err);
+		}
 	}
 	return (
 		<Container>
@@ -67,8 +92,15 @@ const DefaultRouting = (props) => {
 			<Row className="col-ms-2">
 				{
 					user !== undefined &&
-					<StudyPlan cancel={cancelPlanEdit} editPlan={editmodeSave} key={props.studyPlan.length}
-					           studyPlan={props.studyPlan} courseList={course} deleteCourse={props.deleteCourse}/>
+					<StudyPlan type={type}
+					           savePlan={savePlan}
+					           cancel={CancelPlanEdit}
+					           editPlan={EditModeSave}
+					           DisplayWarning={DisplayWarning}
+					           studyPlan={props.studyPlan}
+					           courseList={course}
+					           changePlanType={ChangePlanType}
+					           deleteCourse={props.deleteCourse}/>
 				}
 
 			</Row>
@@ -82,7 +114,7 @@ const DefaultRouting = (props) => {
 					}
 					{
 						!loading && !errorMessage &&
-						<CourseTable key={props.studyPlan.length} addCourse={props.addCourse}
+						<CourseTable  addCourse={props.addCourse}
 						             DisplayWarning={DisplayWarning} course={course} studyPlan={props.studyPlan}/>
 					}
 					{
@@ -95,7 +127,7 @@ const DefaultRouting = (props) => {
 				</Col>
 			</Row>
 
-			{/*<Outlet/>*/}
+
 		</Container>
 	)
 }
