@@ -31,6 +31,7 @@ const StudyPlan = (props) => {
 		props.editPlan();
 		navigate('/editPlan');
 	};
+
 	const SaveSubmit = (event) => {
 		event.preventDefault();
 

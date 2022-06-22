@@ -105,9 +105,17 @@ const CreateStudyPlan = async (userId, studyPlan) => {
 		});
 		if (response.status === 201) {
 			return "success"
-		} else {
-			const error = await response.json().error;
-			throw {code: 400, error: error}
+		} else if(response.status === 403){
+			const error = await response.json();
+			throw {code: 400, error: error.error}
+		}
+		else {
+			const error = await response.json();
+			let errString= ''
+			for( const err of error){
+				errString += err.error
+			}
+			throw {code: 400, error: errString}
 		}
 	} catch (e) {
 		if (e.code === 400)

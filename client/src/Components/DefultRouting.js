@@ -62,6 +62,7 @@ const DefaultRouting = (props) => {
 	}
 	const savePlan = async (studyPlanType) => {
 		try {
+
 			await API.CreateStudyPlan(user.id,
 				{
 					PlanType: studyPlanType,

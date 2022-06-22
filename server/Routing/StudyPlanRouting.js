@@ -77,7 +77,7 @@ router.post('/StudyPlan/:id',
 				const mandetoryCourse = await courseDao.GetMandatoryCourses(course)
 				if (mandetoryCourse[0].mandatoryCourse !== null) {
 					if (!studyplan.includes(mandetoryCourse[0].mandatoryCourse))
-						error.push({error: mandetoryCourse[0] + " is mandatory for " + course})
+						error.push({error: mandetoryCourse[0].mandatoryCourse + " is mandatory for " + course})
 				}
 				const InComatibalCourse = await courseDao.GetIncompatibeCourse(course);
 				const InComatibalcourseList = InComatibalCourse.map((course) => course.SecondCourse);
@@ -89,7 +89,7 @@ router.post('/StudyPlan/:id',
 			//check availability of the course
 			const studentInRole = await courseDao.GetInroledNumber(studyplan);
 			for (const course of studentInRole) {
-				if (course.maxCapacity !== null && ourse.numInRole!==null && course.numInRole >= course.maxCapacity)
+				if (course.maxCapacity !== null && course.numInRole!==null && course.numInRole >= course.maxCapacity)
 					error.push({error: course.code + " is full"})
 			}
 			if (error.length !== 0) {
