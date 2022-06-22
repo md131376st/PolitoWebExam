@@ -333,7 +333,7 @@
 
 ## Screenshot
 
-![homeUnauthenticated](./images/1.png)
+![homeUnauthenticated](https://github.com/polito-WA1-AJ-2022-exam/exam-1---studyplan-md131376st/tree/main/Images/1.png)
 ![expand course](./images/2.png)
 ![loginpage](./images/3.png)
 ![home login user](./images/4.png)
