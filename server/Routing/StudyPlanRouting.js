@@ -86,10 +86,13 @@ router.post('/StudyPlan/:id',
 						error.push({error: course_ + " is incompatible with " + course})
 				}
 			}
+			const CheakIFPlanExsist = await StudyPlanDao.ReadStudyPlan(req.params.id);
 			//check availability of the course
 			const studentInRole = await courseDao.GetInroledNumber(studyplan);
 			for (const course of studentInRole) {
-				if (course.maxCapacity !== null && course.numInRole!==null && course.numInRole >= course.maxCapacity)
+				if (course.maxCapacity !== null && course.numInRole!==null &&
+					!CheakIFPlanExsist.map(e=>e.courseCode).includes(course.code) &&
+					course.numInRole >= course.maxCapacity)
 					error.push({error: course.code + " is full"})
 			}
 			if (error.length !== 0) {
@@ -97,7 +100,7 @@ router.post('/StudyPlan/:id',
 				return;
 			}
 			//remove previous saved plan
-			const CheakIFPlanExsist = await StudyPlanDao.ReadStudyPlan(req.params.id);
+
 			if (CheakIFPlanExsist.length !== 0)
 				await StudyPlanDao.deleteItemByIdFromDB(req.params.id);
 			const rows = await StudyPlanDao.createStudyPlanIntoDB(req.body.studyPlanList, req.params.id);
